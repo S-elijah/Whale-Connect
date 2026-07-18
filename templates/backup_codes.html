@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block header_title %}Backup Codes{% endblock %}
+{% block content %}
+<div class="auth-container" style="min-height:100vh; display:flex; align-items:center; justify-content:center;">
+    <div class="auth-card" style="max-width:500px; width:100%; padding:24px;">
+        <div class="auth-card-header" style="text-align:center; margin-bottom:24px;">
+            <div style="font-size:48px; margin-bottom:12px;">⚠️</div>
+            <h2 style="font-size:24px; font-weight:800; margin-bottom:8px;">Save Your Backup Codes</h2>
+            <p style="color:var(--text-muted); font-size:14px;">These codes can be used to access your account if you lose your authenticator device. Store them somewhere safe!</p>
+        </div>
+        
+        <div style="background:var(--bg-card); border:2px dashed var(--warning); border-radius:12px; padding:20px; margin-bottom:24px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                {% for code in codes %}
+                <div style="font-family:monospace; font-size:16px; font-weight:700; color:var(--text-primary); background:var(--bg-primary); padding:10px; border-radius:8px; text-align:center; letter-spacing:2px;">
+                    {{ code }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div style="background:rgba(255,173,31,0.1); border:1px solid rgba(255,173,31,0.3); border-radius:8px; padding:12px; margin-bottom:24px;">
+            <p style="color:var(--warning); font-size:13px; margin:0;">
+                <strong>⚠️ Important:</strong> These codes will not be shown again. If you lose access to your authenticator app and don't have these codes, you may lose access to your account.
+            </p>
+        </div>
+        
+        <a href="{{ url_for('timeline') }}" class="auth-btn" style="display:block; text-align:center; text-decoration:none;">I've saved my codes — Continue</a>
+    </div>
+</div>
+
+<script>
+// Prevent leaving the page without saving codes
+window.onbeforeunload = function() {
+    return "Make sure you've saved your backup codes!";
+};
+
+// Remove the warning after 10 seconds or when they click continue
+setTimeout(function() {
+    window.onbeforeunload = null;
+}, 10000);
+</script>
+{% endblock %}

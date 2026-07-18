@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block header_title %}Home{% endblock %}
+{% block content %}
+<!-- Tweet Composer -->
+<div class="tweet-composer">
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="composer-row">
+            <img src="{{ url_for('static', filename='uploads/' + current_user.profile_pic) }}" alt="" class="composer-avatar">
+            <div class="composer-input-area">
+                {{ form.body(class="composer-textarea", rows=3, maxlength=140, placeholder="What's breaching?", id="tweet-body") }}
+                <div class="composer-toolbar">
+                    <div class="composer-actions">
+                        <label class="composer-action-btn" title="Add image">
+                            📷
+                            {{ form.image(style="display:none;", onchange="this.form.submit()") }}
+                        </label>
+                        <button type="button" class="composer-action-btn" title="Add GIF">🎥</button>
+                        <button type="button" class="composer-action-btn" title="Add emoji">😊</button>
+                    </div>
+                    <div class="composer-right">
+                        <span class="char-count" id="count">140</span>
+                        {{ form.submit(class="splash-btn", id="splash-btn") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Tweet Feed -->
+{% for tweet in tweets %}
+<div class="tweet-card">
+    {% if tweet.retweet %}
+    <div class="retweet-indicator">
+        🔁 <a href="{{ url_for('profile', username=tweet.author.username) }}">{{ tweet.author.username }}</a> retweeted
+    </div>
+    {% endif %}
+    <div class="tweet-row">
+        <a href="{{ url_for('profile', username=tweet.author.username) }}">
+            <img src="{{ url_for('static', filename='uploads/' + tweet.author.profile_pic) }}" alt="" class="tweet-avatar">
+        </a>
+        <div class="tweet-content">
+            <div class="tweet-header">
+                <a href="{{ url_for('profile', username=tweet.author.username) }}" class="tweet-author-name">
+                    {{ tweet.author.username }}
+                </a>
+                <span class="tweet-verified">✓</span>
+                <span class="tweet-author-handle">@{{ tweet.author.username }}</span>
+                <span class="tweet-dot">·</span>
+                <span class="tweet-time">{{ tweet.timestamp.strftime('%b %d') }}</span>
+            </div>
+            <div class="tweet-body">
+                {{ parse(tweet.body)|safe }}
+            </div>
+            {% if tweet.image %}
+            <div class="tweet-image">
+                <img src="{{ url_for('static', filename='uploads/' + tweet.image) }}" alt="Tweet image">
+            </div>
+            {% endif %}
+            <div class="tweet-actions">
+                <button class="tweet-action" onclick="alert('Reply feature coming soon!')">
+                    <span class="action-icon">💬</span>
+                    <span>0</span>
+                </button>
+                <a href="{{ url_for('retweet', tweet_id=tweet.id) }}" class="tweet-action">
+                    <span class="action-icon">🔁</span>
+                </a>
+                {% if current_user.has_liked(tweet) %}
+                <a href="{{ url_for('unlike', tweet_id=tweet.id) }}" class="tweet-action liked" id="like-{{ tweet.id }}">
+                    <span class="action-icon heart-animate">❤️</span>
+                    <span>{{ tweet.likers.count() }}</span>
+                </a>
+                {% else %}
+                <a href="{{ url_for('like', tweet_id=tweet.id) }}" class="tweet-action" id="like-{{ tweet.id }}">
+                    <span class="action-icon">🤍</span>
+                    <span>{{ tweet.likers.count() }}</span>
+                </a>
+                {% endif %}
+                {% if current_user.has_bookmarked(tweet) %}
+                <a href="{{ url_for('unbookmark_tweet', tweet_id=tweet.id) }}" class="tweet-action" style="color:var(--accent);">
+                    <span class="action-icon">🔖</span>
+                </a>
+                {% else %}
+                <a href="{{ url_for('bookmark_tweet', tweet_id=tweet.id) }}" class="tweet-action">
+                    <span class="action-icon">🔖</span>
+                </a>
+                {% endif %}
+                {% if tweet.author == current_user %}
+                <a href="{{ url_for('delete_tweet', tweet_id=tweet.id) }}" class="tweet-action" style="color:var(--danger);">
+                    <span class="action-icon">🗑️</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div style="text-align:center; padding:48px 16px; color:var(--text-muted);">
+    <div style="font-size:48px; margin-bottom:16px;">🐋</div>
+    <h3 style="color:var(--text-primary); margin-bottom:8px;">No Splashes yet</h3>
+    <p>Follow some users to see their splashes here!</p>
+</div>
+{% endfor %}
+
+<script>
+// Character counter
+const textarea = document.getElementById('tweet-body');
+const counter = document.getElementById('count');
+const submitBtn = document.getElementById('splash-btn');
+
+if (textarea) {
+    textarea.addEventListener('input', function() {
+        const remaining = 140 - this.value.length;
+        counter.textContent = remaining;
+        counter.className = 'char-count';
+        if (remaining < 0) {
+            counter.classList.add('danger');
+            submitBtn.disabled = true;
+        } else if (remaining < 20) {
+            counter.classList.add('warning');
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = false;
+        }
+    });
+
+    // Auto-resize textarea
+    textarea.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whale</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐋</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#1d9bf0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Whale">
+</head>
+<body>
+    <div class="app-container">
+        <!-- LEFT SIDEBAR NAVIGATION -->
+        <aside class="app-sidebar">
+            <div class="sidebar-logo">
+                <a href="{{ url_for('timeline') }}">
+                    <span>🐋</span>
+                    <span class="logo-text">Whale</span>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('timeline') }}" class="nav-item {% if request.endpoint == 'timeline' %}active{% endif %}">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Home</span>
+                </a>
+                <a href="{{ url_for('search') }}" class="nav-item {% if request.endpoint == 'search' %}active{% endif %}">
+                    <span class="nav-icon">🔍</span>
+                    <span class="nav-label">Explore</span>
+                </a>
+                <a href="{{ url_for('notifications') }}" class="nav-item {% if request.endpoint == 'notifications' %}active{% endif %}">
+                    <span class="nav-icon">🔔</span>
+                    <span class="nav-label">Notifications</span>
+                </a>
+                <a href="{{ url_for('messages') }}" class="nav-item {% if request.endpoint == 'messages' or request.endpoint == 'conversation' %}active{% endif %}">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-label">Messages</span>
+                </a>
+                <a href="{{ url_for('profile', username=current_user.username) }}" class="nav-item {% if request.endpoint == 'profile' %}active{% endif %}">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">Profile</span>
+                </a>
+                <a href="{{ url_for('chat.groups') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('chat.') %}active{% endif %}">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Groups</span>
+                </a>
+                <a href="{{ url_for('bookmarks') }}" class="nav-item {% if request.endpoint == 'bookmarks' %}active{% endif %}">
+                    <span class="nav-icon">🔖</span>
+                    <span class="nav-label">Bookmarks</span>
+                </a>
+                <a href="{{ url_for('logout') }}" class="nav-item">
+                    <span class="nav-icon">🚪</span>
+                    <span class="nav-label">Logout</span>
+                </a>
+            </nav>
+
+            <button class="sidebar-tweet-btn" onclick="document.getElementById('tweet-body')?.focus()">
+                <span>Splash</span>
+            </button>
+
+            <div class="sidebar-user">
+                <img src="{{ url_for('static', filename='uploads/' + current_user.profile_pic) }}" alt="Avatar" class="sidebar-user-avatar">
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name">
+                        {{ current_user.username }}
+                        {% if current_user.is_verified %}
+                            <span class="verified-badge" title="Verified {{ current_user.verification_type }}">✓</span>
+                        {% endif %}
+                    </div>
+                    <div class="sidebar-user-handle">@{{ current_user.username }}</div>
+                </div>
+                <span class="sidebar-user-more">⋯</span>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="app-main">
+            <div class="main-header">
+                <h2>{% block header_title %}Home{% endblock %}</h2>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="app-right">
+            <div class="search-container">
+                <form action="{{ url_for('search') }}" method="GET">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" name="q" class="search-input" placeholder="Search Whale" autocomplete="off">
+                </form>
+            </div>
+
+            <div class="trending-box">
+                <div class="trending-header">Trends for you</div>
+                <div class="trending-item">
+                    <div class="trending-category">Trending in Tech</div>
+                    <div class="trending-tag">#ocean</div>
+                    <div class="trending-count">2,341 Splashes</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-category">Trending in Social</div>
+                    <div class="trending-tag">#whale</div>
+                    <div class="trending-count">1,102 Splashes</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-category">Trending in Dev</div>
+                    <div class="trending-tag">#flask</div>
+                    <div class="trending-count">892 Splashes</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-category">Trending in AI</div>
+                    <div class="trending-tag">#python</div>
+                    <div class="trending-count">654 Splashes</div>
+                </div>
+                <div class="trending-show-more">Show more</div>
+            </div>
+
+            <div class="who-to-follow">
+                <div class="who-to-follow-header">Who to follow</div>
+                {% if suggested_users %}
+                {% for user in suggested_users %}
+                    <div class="suggested-user">
+                        <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" alt="" class="suggested-user-avatar">
+                        <div class="suggested-user-info">
+                            <div class="suggested-user-name">{{ user.username }}</div>
+                            <div class="suggested-user-handle">@{{ user.username }}</div>
+                        </div>
+                        <a href="{{ url_for('follow', username=user.username) }}" class="follow-btn-small">Follow</a>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <div class="suggested-user" style="padding:16px 20px; color:var(--text-muted); font-size:14px;">
+                    No suggestions right now
+                </div>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+    // Auto-dismiss flash messages as toasts
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashMessages = document.querySelectorAll('.flash-message');
+        flashMessages.forEach(function(msg) {
+            setTimeout(function() {
+                msg.style.transition = 'opacity 0.3s ease';
+                msg.style.opacity = '0';
+                setTimeout(function() { msg.remove(); }, 300);
+            }, 4000);
+        });
+    });
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/static/sw.js')
+                .then((registration) => {
+                    console.log('[PWA] ServiceWorker registered:', registration.scope);
+                })
+                .catch((error) => {
+                    console.log('[PWA] ServiceWorker registration failed:', error);
+                });
+        });
+    }
+    </script>
+</body>
+</html>

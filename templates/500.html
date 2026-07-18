@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whale — Server Error</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐋</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        .error-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 40px 20px;
+            background: #000;
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f4212e, #ffad1f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+        .error-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #e1e8ed;
+            margin-bottom: 8px;
+        }
+        .error-desc {
+            font-size: 16px;
+            color: #8899a6;
+            margin-bottom: 32px;
+            max-width: 400px;
+        }
+        .error-btn {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #1da1f2, #7857ff);
+            color: #fff;
+            border: none;
+            border-radius: 9999px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .error-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(29, 161, 242, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-page">
+        <div class="error-code">500</div>
+        <div class="error-title">Something went wrong</div>
+        <div class="error-desc">Our servers hit a rough wave. We're working on it — try again in a moment.</div>
+        <a href="{{ url_for('timeline') }}" class="error-btn">Back to Home</a>
+    </div>
+</body>
+</html>

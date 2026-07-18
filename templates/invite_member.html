@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block header_title %}Invite Member{% endblock %}
+{% block content %}
+<div class="invite-container" style="max-width:500px; margin:0 auto; padding:24px 16px;">
+    <h3 style="font-size:20px; font-weight:800; margin-bottom:8px;">Invite to {{ group.name }}</h3>
+    <p style="color:var(--text-muted); margin-bottom:24px;">Add a user to this group by their username</p>
+    
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <div class="input-field" style="margin-bottom:24px;">
+            {{ form.username.label(class="input-label") }}
+            {{ form.username(class="form-input", placeholder="Enter username", id="username-input", autocomplete="off") }}
+            <div id="user-search-results" style="margin-top:8px;"></div>
+        </div>
+        
+        {{ form.submit(class="auth-btn", value="Add to Group") }}
+    </form>
+    
+    <a href="{{ url_for('chat.group_chat', group_id=group.id) }}" style="display:block; text-align:center; margin-top:16px; color:var(--text-muted); font-size:14px;">← Back to group</a>
+</div>
+
+<script>
+const usernameInput = document.getElementById('username-input');
+const searchResults = document.getElementById('user-search-results');
+let searchTimer;
+
+usernameInput.addEventListener('input', function() {
+    clearTimeout(searchTimer);
+    const val = this.value.trim();
+    if (val.length < 2) {
+        searchResults.innerHTML = '';
+        return;
+    }
+    
+    searchTimer = setTimeout(() => {
+        fetch('/chat/api/search_users?q=' + encodeURIComponent(val))
+            .then(r => r.json())
+            .then(users => {
+                if (users.length === 0) {
+                    searchResults.innerHTML = '<div style="padding:8px; color:var(--text-muted); font-size:13px;">No users found</div>';
+                    return;
+                }
+                searchResults.innerHTML = users.map(u => 
+                    '<div style="display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--bg-card); border-radius:8px; margin-bottom:4px; cursor:pointer;" onclick="document.getElementById(\'username-input\').value=\'' + u.username + '\'; searchResults.innerHTML=\'\';">' +
+                        '<img src="/static/uploads/' + u.profile_pic + '" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">' +
+                        '<span style="font-weight:600;">' + u.username + '</span>' +
+                    '</div>'
+                ).join('');
+            });
+    }, 300);
+});
+</script>
+{% endblock %}

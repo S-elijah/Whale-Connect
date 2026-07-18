@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Request Verification — Whale{% endblock %}
+
+{% block content %}
+<div class="verification-container">
+    <div class="verification-card">
+        <div class="verification-header">
+            <h1>Request Verification</h1>
+            <p class="verification-subtitle">Get a blue checkmark to show you're authentic</p>
+        </div>
+
+        {% if current_user.is_verified %}
+            <div class="alert alert-success">
+                <h3>✓ Already Verified</h3>
+                <p>Your account is already verified as a {{ current_user.verification_type }}.</p>
+                <a href="{{ url_for('profile', username=current_user.username) }}" class="btn btn-primary">View Profile</a>
+            </div>
+        {% else %}
+            <div class="verification-types">
+                <div class="verification-type-card" onclick="selectType('individual')">
+                    <div class="type-icon">👤</div>
+                    <h3>Individual</h3>
+                    <p>For personal accounts, creators, and public figures</p>
+                    <ul>
+                        <li>Blue checkmark on your profile</li>
+                        <li>Higher visibility in search</li>
+                        <li>Priority support</li>
+                    </ul>
+                </div>
+
+                <div class="verification-type-card" onclick="selectType('organization')">
+                    <div class="type-icon">🏢</div>
+                    <h3>Organization</h3>
+                    <p>For businesses, brands, and government entities</p>
+                    <ul>
+                        <li>Official whale badge</li>
+                        <li>Business analytics tools</li>
+                        <li>Verified organization label</li>
+                    </ul>
+                </div>
+            </div>
+
+            <form method="POST" class="verification-form" id="verificationForm">
+                <input type="hidden" name="type" id="verificationType" value="">
+                
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea name="bio" id="bio" maxlength="160" placeholder="Tell us about yourself or your organization..." required></textarea>
+                    <span class="char-count"><span id="bioCount">0</span>/160</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="website">Website (optional)</label>
+                    <input type="url" name="website" id="website" placeholder="https://yourwebsite.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location (optional)</label>
+                    <input type="text" name="location" id="location" maxlength="50" placeholder="City, Country">
+                </div>
+
+                <div class="verification-notice">
+                    <h4>📋 Verification Requirements</h4>
+                    <ul>
+                        <li>Active account for at least 30 days</li>
+                        <li>Complete profile with profile picture</li>
+                        <li>Authentic identity (real person/organization)</li>
+                        <li>No policy violations</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large" id="submitBtn" disabled>
+                    Submit Verification Request
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.verification-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.verification-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.verification-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.verification-header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.verification-subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.verification-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.verification-type-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.verification-type-card:hover {
+    border-color: #1d9bf0;
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(29, 155, 240, 0.2);
+}
+
+.verification-type-card.selected {
+    border-color: #1d9bf0;
+    background: #f0f8ff;
+}
+
+.type-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.verification-type-card h3 {
+    margin-bottom: 0.5rem;
+}
+
+.verification-type-card ul {
+    text-align: left;
+    margin-top: 1rem;
+    padding-left: 1.5rem;
+}
+
+.verification-type-card li {
+    margin: 0.5rem 0;
+    color: #666;
+}
+
+.verification-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-group textarea,
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.char-count {
+    text-align: right;
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+.verification-notice {
+    background: #f0f8ff;
+    border-left: 4px solid #1d9bf0;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+}
+
+.verification-notice h4 {
+    margin-bottom: 0.5rem;
+}
+
+.verification-notice ul {
+    margin-left: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.verification-notice li {
+    margin: 0.25rem 0;
+}
+
+.btn-large {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+}
+
+.alert {
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.alert-success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+@media (max-width: 768px) {
+    .verification-container {
+        margin: 1rem auto;
+    }
+    
+    .verification-card {
+        padding: 1rem;
+    }
+    
+    .verification-header h1 {
+        font-size: 1.5rem;
+    }
+}
+</style>
+
+<script>
+let selectedType = null;
+
+function selectType(type) {
+    selectedType = type;
+    document.getElementById('verificationType').value = type;
+    document.getElementById('submitBtn').disabled = false;
+    
+    document.querySelectorAll('.verification-type-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    event.currentTarget.classList.add('selected');
+}
+
+document.getElementById('bio').addEventListener('input', function() {
+    document.getElementById('bioCount').textContent = this.value.length;
+});
+</script>
+{% endblock %}

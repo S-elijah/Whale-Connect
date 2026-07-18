@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block header_title %}#{{ tag }}{% endblock %}
+{% block content %}
+<div style="padding:16px;">
+    <h2 style="font-size:24px; font-weight:800; margin:0;">#{{ tag }}</h2>
+    <p style="color:var(--text-muted); font-size:14px; margin-top:4px;">Splashes with this tag</p>
+</div>
+
+{% for tweet in tweets %}
+<div class="tweet-card">
+    <div class="tweet-row">
+        <a href="{{ url_for('profile', username=tweet.author.username) }}">
+            <img src="{{ url_for('static', filename='uploads/' + tweet.author.profile_pic) }}" alt="" class="tweet-avatar">
+        </a>
+        <div class="tweet-content">
+            <div class="tweet-header">
+                <a href="{{ url_for('profile', username=tweet.author.username) }}" class="tweet-author-name">
+                    {{ tweet.author.username }}
+                </a>
+                <span class="tweet-verified">✓</span>
+                <span class="tweet-author-handle">@{{ tweet.author.username }}</span>
+                <span class="tweet-dot">·</span>
+                <span class="tweet-time">{{ tweet.timestamp.strftime('%b %d') }}</span>
+            </div>
+            <div class="tweet-body">
+                {{ parse(tweet.body)|safe }}
+            </div>
+            {% if tweet.image %}
+            <div class="tweet-image">
+                <img src="{{ url_for('static', filename='uploads/' + tweet.image) }}" alt="">
+            </div>
+            {% endif %}
+            <div class="tweet-actions">
+                <a href="{{ url_for('like', tweet_id=tweet.id) }}" class="tweet-action">
+                    <span class="action-icon">❤️</span>
+                    <span>{{ tweet.likers.count() }}</span>
+                </a>
+                <a href="{{ url_for('retweet', tweet_id=tweet.id) }}" class="tweet-action">
+                    <span class="action-icon">🔁</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div style="text-align:center; padding:48px 16px; color:var(--text-muted);">
+    <div style="font-size:48px; margin-bottom:16px;">🏷️</div>
+    <h3 style="color:var(--text-primary); margin-bottom:8px;">No splashes with this tag yet</h3>
+    <p>Be the first to use #{{ tag }}</p>
+</div>
+{% endfor %}
+{% endblock %}

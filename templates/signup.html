@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whale — Join the Conversation</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐋</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <!-- Left Branding Panel -->
+        <div class="auth-branding">
+            <div class="branding-content">
+                <div class="branding-logo">🐋</div>
+                <h1 class="branding-title">Whale</h1>
+                <p class="branding-tagline">Dive into the conversation.</p>
+                <div class="branding-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">💬</span>
+                        <span>Share your thoughts with the world</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">👥</span>
+                        <span>Connect with like-minded people</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔥</span>
+                        <span>Follow what's trending now</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📸</span>
+                        <span>Share photos & media</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Signup Panel -->
+        <div class="auth-panel">
+            <div class="auth-card">
+                <div class="auth-card-header">
+                    <div class="mobile-logo">🐋</div>
+                    <h2>Create your account</h2>
+                    <p class="auth-subtitle">Join millions on Whale today</p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" class="auth-form" id="signup-form">
+                    {{ form.hidden_tag() }}
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                      {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                      {% endif %}
+                    {% endwith %}
+
+                    <div class="input-group">
+                        <div class="input-field">
+                            {{ form.username.label(class="input-label") }}
+                            {{ form.username(class="form-input", placeholder="Choose a username", id="username-input", autocomplete="off") }}
+                            <div id="username-feedback" style="font-size:12px; margin-top:4px;"></div>
+                        </div>
+                        <div class="input-field">
+                            {{ form.password.label(class="input-label") }}
+                            {{ form.password(class="form-input", placeholder="Create a strong password", id="password-input") }}
+                            <div class="password-strength">
+                                <div class="password-strength-bar" id="strength-bar"></div>
+                            </div>
+                            <div class="password-strength-text" id="strength-text"></div>
+                        </div>
+                        <div class="input-field">
+                            <label class="input-label">Profile Picture</label>
+                            <div class="profile-upload" id="profile-upload" onclick="document.getElementById('profile-pic-input').click()">
+                                <img id="profile-preview" class="profile-upload-preview" src="{{ url_for('static', filename='uploads/default.png') }}" alt="Preview">
+                                <div class="profile-upload-info">
+                                    <span>Upload a profile picture</span>
+                                    <small>PNG, JPG or GIF • Max 5MB</small>
+                                </div>
+                                {{ form.profile_pic(id="profile-pic-input", onchange="previewImage(event)") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {{ form.submit(class="auth-btn", value="Create Account", id="signup-btn") }}
+
+                    <div class="auth-prompt">
+                        Already have an account?
+                        <a href="{{ url_for('login') }}" class="auth-link">Sign in</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="auth-footer">
+                <a href="#">About</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Password Strength Indicator
+    const passwordInput = document.getElementById('password-input');
+    const strengthBar = document.getElementById('strength-bar');
+    const strengthText = document.getElementById('strength-text');
+
+    passwordInput.addEventListener('input', function() {
+        const val = this.value;
+        let strength = 0;
+        
+        if (val.length >= 6) strength += 1;
+        if (val.length >= 10) strength += 1;
+        if (/[A-Z]/.test(val)) strength += 1;
+        if (/[0-9]/.test(val)) strength += 1;
+        if (/[^A-Za-z0-9]/.test(val)) strength += 1;
+        
+        const levels = ['', 'weak', 'fair', 'good', 'strong', 'strong'];
+        const labels = ['', 'Weak — Try adding numbers & symbols', 'Fair — Add a symbol for strength', 'Good — Almost there!', 'Strong — Great password!', 'Strong — Excellent password!'];
+        
+        strengthBar.className = 'password-strength-bar ' + levels[strength];
+        strengthText.textContent = labels[strength];
+    });
+
+    // Profile Picture Preview
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profile-preview').src = e.target.result;
+                document.getElementById('profile-upload').classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Username availability check (simple debounced)
+    const usernameInput = document.getElementById('username-input');
+    const usernameFeedback = document.getElementById('username-feedback');
+    let usernameTimer;
+
+    usernameInput.addEventListener('input', function() {
+        clearTimeout(usernameTimer);
+        const val = this.value.trim();
+        if (val.length < 3) {
+            usernameFeedback.innerHTML = '';
+            return;
+        }
+        usernameFeedback.innerHTML = '<span style="color:var(--text-muted)">Checking availability...</span>';
+        usernameTimer = setTimeout(() => {
+            fetch('/check_username?username=' + encodeURIComponent(val))
+                .then(r => r.json())
+                .then(data => {
+                    if (data.available) {
+                        usernameFeedback.innerHTML = '<span style="color:var(--success)">✓ Username available!</span>';
+                        usernameInput.classList.remove('error');
+                    } else {
+                        usernameFeedback.innerHTML = '<span style="color:var(--danger)">✗ Username taken</span>';
+                        usernameInput.classList.add('error');
+                    }
+                })
+                .catch(() => {
+                    usernameFeedback.innerHTML = '';
+                });
+        }, 500);
+    });
+    </script>
+</body>
+</html>
