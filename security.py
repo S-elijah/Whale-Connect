@@ -25,7 +25,13 @@ from cryptography.hazmat.backends import default_backend
 
 # Sanitization
 import bleach
-from bleach.css_sanitizer import CSSSanitizer
+try:
+    from bleach.css_sanitizer import CSSSanitizer
+    CSS_SANITIZER = CSSSanitizer(allowed_css_properties=[])
+    HAS_CSS_SANITIZER = True
+except ImportError:
+    HAS_CSS_SANITIZER = False
+    CSS_SANITIZER = None
 
 # 2FA
 import pyotp
@@ -220,15 +226,25 @@ class InputSanitizer:
         """
         if not text:
             return ""
-        css_sanitizer = CSSSanitizer(allowed_css_properties=[])
-        return bleach.clean(
-            text,
-            tags=SecurityConfig.ALLOWED_HTML_TAGS,
-            attributes=SecurityConfig.ALLOWED_HTML_ATTRS,
-            css_sanitizer=css_sanitizer,
-            strip=True,
-            strip_comments=True
-        )
+        # Use CSS sanitizer if available, otherwise skip CSS sanitization
+        if HAS_CSS_SANITIZER:
+            css_sanitizer = CSS_SANITIZER
+            return bleach.clean(
+                text,
+                tags=SecurityConfig.ALLOWED_HTML_TAGS,
+                attributes=SecurityConfig.ALLOWED_HTML_ATTRS,
+                css_sanitizer=css_sanitizer,
+                strip=True,
+                strip_comments=True
+            )
+        else:
+            return bleach.clean(
+                text,
+                tags=SecurityConfig.ALLOWED_HTML_TAGS,
+                attributes=SecurityConfig.ALLOWED_HTML_ATTRS,
+                strip=True,
+                strip_comments=True
+            )
     
     @staticmethod
     def sanitize_plain_text(text: str, max_length: int = 500) -> str:
