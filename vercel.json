@@ -21,7 +21,11 @@
     "DEBUG": "false",
     "TESTING": "false",
     "SECRET_KEY": "change-this-to-a-secure-random-key-in-vercel-dashboard",
-    "WHALE_ENCRYPTION_KEY": "change-this-to-a-secure-random-key-in-vercel-dashboard"
+    "WHALE_ENCRYPTION_KEY": "change-this-to-a-secure-random-key-in-vercel-dashboard",
+    "SESSION_COOKIE_SECURE": "true",
+    "SESSION_COOKIE_HTTPONLY": "true",
+    "SESSION_COOKIE_SAMESITE": "Strict",
+    "PERMANENT_SESSION_LIFETIME": "7200"
   },
   "functions": {
     "api/index.py": {

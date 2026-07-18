@@ -10,9 +10,6 @@ import base64
 import logging
 from datetime import datetime, timedelta
 
-# OS and environment
-import os
-
 from flask import (
     Flask, render_template, request, redirect, url_for, 
     flash, session, g, current_app, jsonify, make_response
