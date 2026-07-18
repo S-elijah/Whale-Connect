@@ -771,15 +771,19 @@ from chat import chat_bp
 app.register_blueprint(chat_bp)
 
 # ============================================
+# DATABASE INITIALIZATION
+# ============================================
+# Initialize database tables on app startup (required for Vercel serverless functions)
+with app.app_context():
+    db.create_all()
+    from chat import Group, GroupMember, GroupMessage
+    db.create_all()
+
+# ============================================
 # MAIN
 # ============================================
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        from chat import Group, GroupMember, GroupMessage
-        db.create_all()
-    
     print("""
     ╔══════════════════════════════════════════╗
     ║     🐋 WHALE — SECURE SOCIAL PLATFORM    ║
