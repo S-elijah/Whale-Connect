@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
+      "src": "backend/api/index.py",
       "use": "@vercel/python",
       "config": {
         "maxLambdaSize": "50mb",
@@ -13,7 +13,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/index.py"
+      "dest": "backend/api/index.py"
     }
   ],
   "env": {
@@ -28,7 +28,7 @@
     "PERMANENT_SESSION_LIFETIME": "7200"
   },
   "functions": {
-    "api/index.py": {
+    "backend/api/index.py": {
       "memory": 1024,
       "maxDuration": 10
     }

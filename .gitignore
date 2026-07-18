@@ -2,7 +2,10 @@ venv/
 __pycache__/
 *.pyc
 instance/whale.db
+backend/instance/whale.db
 static/uploads/*
+backend/static/uploads/*
 !static/uploads/default.png
+!backend/static/uploads/default.png
 .vscode/
 .env
