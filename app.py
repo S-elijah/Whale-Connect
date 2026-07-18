@@ -10,6 +10,9 @@ import base64
 import logging
 from datetime import datetime, timedelta
 
+# OS and environment
+import os
+
 from flask import (
     Flask, render_template, request, redirect, url_for, 
     flash, session, g, current_app, jsonify, make_response
@@ -25,7 +28,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
-import os
 
 # Import shared models
 from models import db, User, Tweet, Notification, Message, followers, likes, bookmarks
@@ -57,8 +59,11 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///whale.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# File uploads
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+# File uploads - Use /tmp for Vercel compatibility
+if os.environ.get('VERCEL'):
+    app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
+else:
+    app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = SecurityConfig.MAX_FILE_SIZE
 
 # Session security
@@ -75,8 +80,9 @@ app.config['TESTING'] = False
 # Proxy support for proper IP detection
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
-# Create upload directory
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# Create upload directory (only if not on Vercel)
+if not os.environ.get('VERCEL'):
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize database with app
 db.init_app(app)

@@ -19,7 +19,9 @@
   "env": {
     "FLASK_ENV": "production",
     "DEBUG": "false",
-    "TESTING": "false"
+    "TESTING": "false",
+    "SECRET_KEY": "change-this-to-a-secure-random-key-in-vercel-dashboard",
+    "WHALE_ENCRYPTION_KEY": "change-this-to-a-secure-random-key-in-vercel-dashboard"
   },
   "functions": {
     "api/index.py": {
