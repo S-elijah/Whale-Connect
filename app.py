@@ -50,8 +50,11 @@ load_dotenv()
 # Security: Use persistent secret key from .env file
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'whale_super_secret_key_2024_secure_random_64_chars_long_here')
 
-# Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///whale.db'
+# Database - Use /tmp for Vercel compatibility (read-only filesystem)
+if os.environ.get('VERCEL'):
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/whale.db'
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///whale.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # File uploads
