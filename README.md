@@ -2,7 +2,7 @@
 
 **Beautiful Frontend. Zero Backend. 100% Local.**
 
-A lightweight, responsive social network MVP built with vanilla HTML, CSS, and JavaScript. No server required—everything runs locally using browser storage.
+A lightweight, responsive social network MVP built with vanilla HTML, CSS and JavaScript. No server required everything runs locally using browser storage.
 
 ---
 
