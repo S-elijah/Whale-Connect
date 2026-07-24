@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "public": true,
   "buildCommand": "echo 'Frontend MVP - No build needed'",
   "outputDirectory": "frontend",
   "routes": [
     {
-      "src": "/.*",
+      "src": "/(.*)",
       "dest": "/frontend/index.html"
     }
   ]
