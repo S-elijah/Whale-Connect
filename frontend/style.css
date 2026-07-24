@@ -1,0 +1,364 @@
+:root {
+    --primary: #1da1f2;
+    --primary-dark: #1a91da;
+    --danger: #f4212e;
+    --success: #00ba7c;
+    --bg-primary: #000000;
+    --bg-secondary: #15181c;
+    --text-primary: #e1e8ed;
+    --text-secondary: #8899a6;
+    --border-color: #2f3336;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+/* Navbar */
+.navbar {
+    background: rgba(0,0,0,0.8);
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-container {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+}
+
+.navbar-logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.navbar-buttons, .user-menu {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Buttons */
+.btn-primary, .btn-secondary, .btn-danger {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 24px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.btn-secondary:hover {
+    background: rgba(29, 161, 242, 0.1);
+}
+
+.btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    padding: 32px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid var(--border-color);
+}
+
+.modal-content h2 {
+    margin-bottom: 24px;
+    font-size: 24px;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.modal-content input {
+    padding: 12px 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.modal-content p {
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.modal-content a {
+    color: var(--primary);
+    cursor: pointer;
+}
+
+/* Main Content */
+.main-content {
+    max-width: 600px;
+    margin: 0 auto;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    min-height: calc(100vh - 60px);
+}
+
+/* Timeline */
+.timeline {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.tweet-composer {
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.composer-header {
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.tweet-composer textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 20px;
+    font-family: inherit;
+    resize: none;
+    max-height: 200px;
+    padding: 8px 0;
+}
+
+.tweet-composer textarea:focus {
+    outline: none;
+}
+
+.tweet-composer textarea::placeholder {
+    color: var(--text-secondary);
+}
+
+.composer-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+#char-count {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Tweets Feed */
+.tweets-feed {
+    min-height: 100px;
+}
+
+.tweet {
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.tweet:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tweet-header {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.tweet-avatar {
+    font-size: 40px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.tweet-info {
+    flex: 1;
+}
+
+.tweet-author {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.tweet-name {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.tweet-handle {
+    color: var(--text-secondary);
+}
+
+.tweet-time {
+    color: var(--text-secondary);
+}
+
+.tweet-body {
+    margin: 12px 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.tweet-actions {
+    display: flex;
+    justify-content: space-around;
+    color: var(--text-secondary);
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.tweet-action {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.tweet-action:hover {
+    background: rgba(29, 161, 242, 0.1);
+    color: var(--primary);
+}
+
+/* Profile */
+.profile-page {
+    animation: fadeIn 0.3s ease;
+}
+
+.profile-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-banner {
+    height: 200px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+.profile-info {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    margin-bottom: 16px;
+}
+
+.profile-avatar {
+    font-size: 60px;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 4px solid var(--bg-primary);
+    margin-top: -60px;
+    flex-shrink: 0;
+}
+
+.profile-details {
+    flex: 1;
+    padding-top: 16px;
+}
+
+.profile-details h2 {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.profile-details p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 48px 16px;
+    color: var(--text-secondary);
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
